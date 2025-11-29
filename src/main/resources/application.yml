@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dashboard-api
+    username: postgres
+    password: 15122004
+
+  jpa:
+    hibernate:
+      ddl-auto: none   # Hibernate non crea tabelle, lascia fare a Flyway
+    show-sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true   # utile se il DB è già esistente
+
+server:
+  port: 8080

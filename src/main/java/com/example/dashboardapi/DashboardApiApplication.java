@@ -1,4 +1,4 @@
-package com.example.dashboard_api;
+package com.example.dashboardapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
