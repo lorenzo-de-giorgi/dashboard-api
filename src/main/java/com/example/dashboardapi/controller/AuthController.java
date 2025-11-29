@@ -44,13 +44,16 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest req) {
 
-        authManager.authenticate(
+        try {
+            authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        req.username(),
-                        req.password()));
+                    req.username(),
+                    req.password()));
+        } catch (org.springframework.security.core.AuthenticationException ex) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
 
-        String token =
-                jwtUtil.generateToken(req.username());
+        String token = jwtUtil.generateToken(req.username());
 
         return new AuthResponse(token);
     }
