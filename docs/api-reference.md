@@ -6,11 +6,14 @@ AuthController
 
 - `POST /auth/register` — registra un nuovo utente. Body: `LoginRequest` (username, password). Restituisce `201` e l'entità salvata.
 - `POST /auth/login` — effettua il login. Body: `LoginRequest`. Restituisce `AuthResponse` con il token JWT.
-- `GET /auth/user/{username}` — restituisce informazioni pubbliche sull'utente (`GetResponse<UserDto>`). Se non trovato -> `404`.
+
+UsersController
+
+- `GET /api/v1/users/{username}` — restituisce informazioni pubbliche sull'utente (`GetResponse<UserDto>`). Se non trovato -> `404`.
 
 Esempi di risposta
 
-- `GET /auth/user/{username}` (200):
+-- `GET /api/v1/users/{username}` (200):
 
 ```json
 {

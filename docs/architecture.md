@@ -36,3 +36,12 @@ File importanti
 - `DashboardApiApplication.java` — entrypoint Spring Boot.
 - `SecurityConfig.java`, `JwtFilter.java`, `JwtUtil.java` — gestione sicurezza e JWT.
 - `UserRepository.java` — repository JPA per `User`.
+
+Prefisso API globale `/api/v1`
+
+- Il progetto include una configurazione `ApiPrefixConfig` (`src/main/java/com/example/dashboardapi/config/ApiPrefixConfig.java`) che applica automaticamente il prefisso `/api/v1` a tutte le rotte registrate dai controller.
+- Regole principali:
+  - Se una mapping inizia già con `/auth` o `/api`, non viene modificata (per compatibilità degli endpoint di autenticazione e per eventuali prefissi espliciti).
+  - Tutte le altre rotte otterranno automaticamente `/api/v1` anteposto, evitando di dover cambiare tutti i controller manualmente.
+- Vantaggi: versioning centralizzato e riduzione della modifica manuale dei controller.
+- Attenzione: se vuoi modificare il prefisso o il comportamento (ad es. escludere altri percorsi), modifica `ApiPrefixConfig`.
