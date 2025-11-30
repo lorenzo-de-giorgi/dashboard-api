@@ -59,12 +59,5 @@ public class AuthController {
     }
 
     // GET di test: restituisce informazioni pubbliche dell'utente (senza password)
-    @GetMapping("/user/{username}")
-    public com.example.dashboardapi.dto.GetResponse<com.example.dashboardapi.dto.UserDto> getUser(@PathVariable String username) {
-        com.example.dashboardapi.dto.UserDto dto = repo.findByUsername(username)
-                .map(u -> new com.example.dashboardapi.dto.UserDto(u.getId(), u.getUsername(), u.getRole()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        return new com.example.dashboardapi.dto.GetResponse<>(true, dto, "OK");
-    }
+    // NOTE: user lookup moved to `/api/v1/users/{username}`. Keep register/login under /auth.
 }
