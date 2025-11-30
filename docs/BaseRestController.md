@@ -206,3 +206,80 @@ Se vuoi, posso:
 - creare l'`OpenAPI`/Swagger esempio che documenta il wrapper `GetResponse`.
 
 Fammi sapere quale di queste opzioni preferisci e procedo.
+
+**Nuove risposte standard per POST / PUT / DELETE**
+
+Ho aggiunto tre DTO standard per uniformare le risposte delle operazioni di modifica:
+
+- `PostResponse<T>`: wrapper per le risposte alle chiamate `POST` (creazione). Campi: `success`, `data`, `message`, `timestamp`.
+- `UpdateResponse<T>`: wrapper per le risposte alle chiamate `PUT` (aggiornamento). Campi: `success`, `data`, `message`, `timestamp`.
+- `DeleteResponse`: wrapper per le risposte alle chiamate `DELETE`. Campi: `success`, `id`, `message`, `timestamp`.
+
+Questi DTO si trovano in: `src/main/java/com/example/dashboardapi/dto/`.
+
+Ho inoltre aggiunto metodi helper opzionali in `BaseRestController` che ritornano questi DTO invece dei semplici `ResponseEntity` con entità grezze:
+
+- `createWithResponse(entity, repository)` -> `ResponseEntity<PostResponse<S>>` con `201 Created`.
+- `updateWithResponse(id, entity, repository)` -> `ResponseEntity<UpdateResponse<S>>` con `200 OK` o `404 Not Found` e body `UpdateResponse` che contiene `success=false`.
+- `deleteWithResponse(id, repository)` -> `ResponseEntity<DeleteResponse>` con `200 OK` (body `DeleteResponse`) o `404 Not Found`.
+
+Esempi d'uso nel controller (bozza)
+
+```java
+@RestController
+@RequestMapping("/users")
+public class UserController extends BaseRestController {
+    @Autowired
+    private UserRepository userRepo;
+
+    @PostMapping
+    public ResponseEntity<com.example.dashboardapi.dto.PostResponse<UserDto>> createUser(@RequestBody CreateUserRequest req) {
+        User entity = mapFromReq(req);
+        // salva e restituisce PostResponse con body e 201
+        return createWithResponse(entity, userRepo);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<com.example.dashboardapi.dto.UpdateResponse<UserDto>> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest req) {
+        User entity = mapFromReq(req);
+        entity.setId(id);
+        // restituisce UpdateResponse con 200 o 404
+        return updateWithResponse(id, entity, userRepo);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<com.example.dashboardapi.dto.DeleteResponse> deleteUser(@PathVariable Long id) {
+        // restituisce DeleteResponse con 200 (deleted) o 404 (not found)
+        return deleteWithResponse(id, userRepo);
+    }
+}
+```
+
+Note sul `DELETE`: tecnicamente `204 No Content` è lo status più corretto quando non si restituisce body; tuttavia se desideri fornire conferma strutturata (es. `id` cancellato e `timestamp`), `200 OK` con `DeleteResponse` è più comodo per i client. La helper `deleteWithResponse` usa `200 OK` con body per comodità; il metodo `delete(...)` originale (che restituisce `204 No Content`) è ancora disponibile se preferisci usarlo.
+
+Serializzazione e compatibilità
+
+- Questi wrapper sono POJO semplici — funzionano con Jackson (configurazione Spring Boot predefinita). Assicurati che i DTO dei dati (`UserDto`, ecc.) siano serializzabili correttamente (getters standard).
+
+Linee guida sull'adozione
+
+- Se vuoi uniformare tutte le risposte CRUD nell'API, usa i metodi `createWithResponse`/`updateWithResponse`/`deleteWithResponse` e restituisci `GetResponse` per tutte le GET.
+- Se preferisci mantenere gli standard puri REST (es. `201` con `Location` header, `204` per delete), puoi combinare: usa `createWithResponse` per il body e aggiungi l'header `Location` manualmente quando ti serve.
+
+Esempio: `POST` che imposta header `Location`
+
+```java
+@PostMapping
+public ResponseEntity<PostResponse<UserDto>> createUser(@RequestBody CreateUserRequest req, UriComponentsBuilder uriBuilder) {
+    User entity = mapFromReq(req);
+    ResponseEntity<PostResponse<User>> resp = createWithResponse(entity, userRepo);
+    User saved = resp.getBody().getData();
+    URI location = uriBuilder.path("/users/{id}").buildAndExpand(saved.getId()).toUri();
+    return ResponseEntity.created(location).body(new PostResponse<>(true, mapToDto(saved), "Created"));
+}
+```
+
+Se vuoi, aggiungo anche:
+
+- test di integrazione JUnit che verificano i wrapper di risposta;
+- esempi OpenAPI/Swagger che dichiarano i wrapper per tutti gli endpoint.
