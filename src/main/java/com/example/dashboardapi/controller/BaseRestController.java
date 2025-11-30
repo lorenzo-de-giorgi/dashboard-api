@@ -26,4 +26,31 @@ public abstract class BaseRestController {
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Optional helpers that return standard response DTOs
+    protected <S, ID> ResponseEntity<com.example.dashboardapi.dto.PostResponse<S>> createWithResponse(S entity, JpaRepository<S, ID> repository) {
+        S saved = repository.save(entity);
+        com.example.dashboardapi.dto.PostResponse<S> resp = new com.example.dashboardapi.dto.PostResponse<>(true, saved, "Created");
+        return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+    }
+
+    protected <S, ID> ResponseEntity<com.example.dashboardapi.dto.UpdateResponse<S>> updateWithResponse(ID id, S entity, JpaRepository<S, ID> repository) {
+        if (!repository.existsById(id)) {
+            com.example.dashboardapi.dto.UpdateResponse<S> resp = new com.example.dashboardapi.dto.UpdateResponse<>(false, null, "Not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+        }
+        S saved = repository.save(entity);
+        com.example.dashboardapi.dto.UpdateResponse<S> resp = new com.example.dashboardapi.dto.UpdateResponse<>(true, saved, "Updated");
+        return ResponseEntity.ok(resp);
+    }
+
+    protected <ID> ResponseEntity<com.example.dashboardapi.dto.DeleteResponse> deleteWithResponse(ID id, JpaRepository<?, ID> repository) {
+        if (!repository.existsById(id)) {
+            com.example.dashboardapi.dto.DeleteResponse resp = new com.example.dashboardapi.dto.DeleteResponse(false, id, "Not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resp);
+        }
+        repository.deleteById(id);
+        com.example.dashboardapi.dto.DeleteResponse resp = new com.example.dashboardapi.dto.DeleteResponse(true, id, "Deleted");
+        return ResponseEntity.ok(resp);
+    }
 }
