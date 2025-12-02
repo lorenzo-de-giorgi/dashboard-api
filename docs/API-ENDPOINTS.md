@@ -11,7 +11,7 @@ Questo documento elenca gli endpoint esposti dall'applicazione, il metodo HTTP, 
   - Metodo: `POST`
   - Path: `/auth/register`
   - Autenticazione: NO
-  - Body: `LoginRequest` (JSON) — `{ "username": "...", "password": "..." }`
+  - Body: `LoginRequest` (JSON) — `{ "email": "...", "password": "..." }`
   - Response: `201/200` vuoto (salvataggio utente)
 
 - **Login**
@@ -25,17 +25,17 @@ Questo documento elenca gli endpoint esposti dall'applicazione, il metodo HTTP, 
 - **Get user**
 
   - Metodo: `GET`
-  - Path: `/api/v1/users/{username}`
-  - Autenticazione: SÌ (endpoint protetto da JWT). Accesso consentito solo a `ROLE_ADMIN` o all'utente stesso (es. `username` == token subject).
+  - Path: `/api/v1/users/{email}`
+  - Autenticazione: SÌ (endpoint protetto da JWT). Accesso consentito solo a `ROLE_ADMIN` o all'utente stesso (es. `email` == token subject).
   - Response: `GetResponse<UserDto>`
     - Esempio:
-      `{ "success": true, "data": { "id": 1, "username": "alice", "role": "ROLE_USER" }, "message": "OK", "timestamp": 1700000000000, "resultsSize": 1 }`
+      `{ "success": true, "data": { "id": 1, "email": "alice@example.com", "role": "ROLE_USER" }, "message": "OK", "timestamp": 1700000000000, "resultsSize": 1 }`
 
 - **Protected test**
   - Metodo: `GET`
   - Path: `/api/v1/protected/test`
   - Autenticazione: SÌ (richiede header `Authorization: Bearer <token>`)
-  - Response: `GetResponse<String>` con messaggio contenente l'username autenticato
+  - Response: `GetResponse<String>` con messaggio contenente l'email autenticata
 
 **Configurazione prefisso**
 
@@ -75,7 +75,7 @@ Usare `GetResponse<T>` per tutti gli endpoint GET fornisce un formato coerente p
 - Login (curl):
 
 ```bash
-curl -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" -d '{"username":"alice","password":"pwd"}'
+curl -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" -d '{"email":"alice@example.com","password":"pwd"}'
 ```
 
 - Chiamata protetta (curl):

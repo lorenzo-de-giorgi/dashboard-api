@@ -37,21 +37,25 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
 
-                String username =
-                        jwtUtil.extractUsername(token);
+                String email = jwtUtil.extractEmail(token);
 
-                UserDetails details =
-                        uds.loadUserByUsername(username);
+                UserDetails details;
+                if (uds instanceof com.example.dashboardapi.security.DatabaseUserDetailsService duds) {
+                    details = duds.loadUserByEmail(email);
+                } else {
+                    details = uds.loadUserByUsername(email);
+                }
 
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                details,
-                                null,
-                                details.getAuthorities()
-                        );
+                EmailPasswordAuthenticationToken auth = new EmailPasswordAuthenticationToken(
+                        details,
+                        null,
+                        details.getAuthorities()
+                );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(auth);
+                // populate web details (useful for logging/audit)
+                auth.setDetails(new org.springframework.security.web.authentication.WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 

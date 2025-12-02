@@ -22,8 +22,8 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest req) { ... }
 
-    @GetMapping("/user/{username}")
-    public GetResponse<UserDto> getUser(@PathVariable String username) { ... }
+    @GetMapping("/user/{email}")
+    public GetResponse<UserDto> getUser(@PathVariable String email) { ... }
 }
 ```
 

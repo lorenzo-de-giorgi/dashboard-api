@@ -57,7 +57,7 @@ public class UserController extends BaseRestController {
     @GetMapping
     public com.example.dashboardapi.dto.GetResponse<List<com.example.dashboardapi.dto.UserDto>> listUsers() {
         List<com.example.dashboardapi.dto.UserDto> list = userRepo.findAll().stream()
-            .map(u -> new com.example.dashboardapi.dto.UserDto(u.getId(), u.getUsername(), u.getRole()))
+            .map(u -> new com.example.dashboardapi.dto.UserDto(u.getId(), u.getEmail(), u.getRole()))
             .collect(Collectors.toList());
         return new com.example.dashboardapi.dto.GetResponse<>(true, list, "OK");
     }
@@ -96,7 +96,7 @@ Esempio di endpoint GET che restituisce singolo oggetto:
 @GetMapping("/{id}")
 public GetResponse<UserDto> getUser(@PathVariable Long id) {
     UserDto dto = repo.findById(id)
-        .map(u -> new UserDto(u.getId(), u.getUsername(), u.getRole()))
+        .map(u -> new UserDto(u.getId(), u.getEmail(), u.getRole()))
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     return new GetResponse<>(true, dto, "OK");
 }
@@ -114,10 +114,10 @@ Nota: `resultsSize` viene popolato automaticamente dal costruttore di `GetRespon
 Esempio: restituire `GetResponse` ma al contempo mandare `404` se non trovato
 
 ```java
-@GetMapping("/{username}")
-public ResponseEntity<GetResponse<UserDto>> getByUsername(@PathVariable String username) {
-    UserDto dto = repo.findByUsername(username)
-        .map(u -> new UserDto(u.getId(), u.getUsername(), u.getRole()))
+@GetMapping("/{email}")
+public ResponseEntity<GetResponse<UserDto>> getByEmail(@PathVariable String email) {
+    UserDto dto = repo.findByEmail(email)
+        .map(u -> new UserDto(u.getId(), u.getEmail(), u.getRole()))
         .orElse(null);
     if (dto == null) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

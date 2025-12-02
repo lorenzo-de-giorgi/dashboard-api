@@ -14,10 +14,10 @@ public class ProtectedController {
     @GetMapping("/test")
     public GetResponse<String> testAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = (auth != null) ? auth.getName() : null;
-        if (username == null) {
+        String email = (auth != null) ? auth.getName() : null;
+        if (email == null) {
             return new GetResponse<>(false, null, "Unauthenticated");
         }
-        return new GetResponse<>(true, "hello, " + username, "Authenticated");
+        return new GetResponse<>(true, "hello, " + email, "Authenticated");
     }
 }

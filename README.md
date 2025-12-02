@@ -118,7 +118,7 @@ Se desideri cambiare il prefisso o escludere altri percorsi, modifica `ApiPrefix
 
 - `POST /auth/register` — registra un nuovo utente.
 
-  - Body: `LoginRequest` (username, password)
+  - Body: `LoginRequest` (email, password)
   - Risposta: `201 Created` (entità salvata)
 
 - `POST /auth/login` — login
@@ -126,8 +126,9 @@ Se desideri cambiare il prefisso o escludere altri percorsi, modifica `ApiPrefix
   - Body: `LoginRequest`
   - Risposta: `200 OK` con `AuthResponse` contenente il token JWT
 
-- `GET /api/v1/users/{username}` — informazioni pubbliche utente
-  - Risposta: `GetResponse<UserDto>` (wrapper uniforme per GET)
+-- `GET /api/v1/users/{email}` — informazioni pubbliche utente
+
+- Risposta: `GetResponse<UserDto>` (wrapper uniforme per GET)
 
 Note autenticazione `/api/v1`
 

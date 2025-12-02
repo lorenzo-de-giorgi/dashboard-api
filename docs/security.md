@@ -11,8 +11,8 @@ Componenti principali
 
 Flusso di autenticazione
 
-1. Client invia `POST /auth/login` con username/password.
-2. `AuthController` autentica usando `AuthenticationManager` e, se valida, genera un token con `JwtUtil.generateToken(username)`.
+1. Client invia `POST /auth/login` con email/password.
+2. `AuthController` autentica usando `AuthenticationManager` e, se valida, genera un token con `JwtUtil.generateToken(email)`.
 3. Il client salva il token e lo include nelle richieste successive nell'header `Authorization`.
 4. `JwtFilter` valida il token e popola il `SecurityContext` per permettere l'accesso alle risorse protette.
 

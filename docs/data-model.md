@@ -2,7 +2,7 @@
 
 Entità principali
 
-- `User` — rappresenta l'utente del sistema. Campi tipici: `id`, `username`, `password`, `role`.
+- `User` — rappresenta l'utente del sistema. Campi tipici: `id`, `email`, `password`, `role`.
 
 Repository
 
@@ -27,7 +27,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String email;
     private String password;
     private String role;
     // getters/setters

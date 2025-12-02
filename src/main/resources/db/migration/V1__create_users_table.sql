@@ -8,7 +8,7 @@ CREATE TABLE users (
     gender CHAR(1) NOT NULL,
     phone_number VARCHAR(150) NOT NULL,
     address VARCHAR(255),
-    permission_level VARCHAR(50) NOT NULL,
+    permission VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

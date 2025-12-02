@@ -8,7 +8,7 @@ DTO principali presenti
 - `PostResponse<T>` — wrapper per le risposte POST (creazione).
 - `UpdateResponse<T>` — wrapper per le risposte PUT (aggiornamento).
 - `DeleteResponse` — wrapper per le risposte DELETE.
-- `UserDto` — DTO che espone i dati pubblici dell'utente (`id`, `username`, `role`).
+- `UserDto` — DTO che espone i dati pubblici dell'utente (`id`, `email`, `role`).
 
 Perché usare DTO
 
@@ -19,7 +19,7 @@ Esempio: creare una risposta GET uniforme
 
 ```java
 List<UserDto> dtos = repo.findAll().stream()
-    .map(u -> new UserDto(u.getId(), u.getUsername(), u.getRole()))
+    .map(u -> new UserDto(u.getId(), u.getEmail(), u.getRole()))
     .collect(Collectors.toList());
 return new GetResponse<>(true, dtos, "OK");
 ```

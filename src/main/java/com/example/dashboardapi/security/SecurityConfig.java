@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.example.dashboardapi.security.EmailPasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
@@ -46,8 +46,11 @@ public class SecurityConfig {
 
         http.addFilterBefore(
                 new JwtFilter(jwtUtil, uds),
-                UsernamePasswordAuthenticationFilter.class
+                EmailPasswordAuthenticationFilter.class
         );
+
+        // Note: authentication is performed in `AuthController` (login endpoint),
+        // so we do not register a stateful Username/Email form filter here.
 
         return http.build();
     }

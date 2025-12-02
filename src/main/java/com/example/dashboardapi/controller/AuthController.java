@@ -34,12 +34,18 @@ public class AuthController {
 
     // REGISTRA UTENTE
     @PostMapping("/register")
-    public void register(@RequestBody LoginRequest req) {
+    public void register(@RequestBody RegisterRequest req) {
 
         User u = new User();
-        u.setUsername(req.username());
+        u.setEmail(req.email());
         u.setPassword(encoder.encode(req.password()));
-        u.setRole("ROLE_USER");
+        u.setName(req.name());
+        u.setSurname(req.surname());
+        u.setDate_of_birth(req.date_of_birth());
+        u.setGender(req.gender());
+        u.setPhone_number(req.phone_number());
+        u.setAddress(req.address());
+        u.setPermission(req.permission());
 
         repo.save(u);
     }
@@ -50,14 +56,14 @@ public class AuthController {
 
         try {
             authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    req.username(),
+                new com.example.dashboardapi.security.EmailPasswordAuthenticationToken(
+                    req.email(),
                     req.password()));
         } catch (org.springframework.security.core.AuthenticationException ex) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        String token = jwtUtil.generateToken(req.username());
+        String token = jwtUtil.generateToken(req.email());
 
         return new AuthResponse(token);
     }
@@ -83,5 +89,5 @@ public class AuthController {
     }
 
     // GET di test: restituisce informazioni pubbliche dell'utente (senza password)
-    // NOTE: user lookup moved to `/api/v1/users/{username}`. Keep register/login under /auth.
+    // NOTE: user lookup moved to `/api/v1/users/{email}`. Keep register/login under /auth.
 }

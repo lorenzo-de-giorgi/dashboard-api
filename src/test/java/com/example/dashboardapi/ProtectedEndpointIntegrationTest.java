@@ -39,16 +39,16 @@ public class ProtectedEndpointIntegrationTest {
         this.mvc = org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup(this.wac).build();
         userRepo.deleteAll();
         User u = new User();
-        u.setUsername("testuser");
+        u.setEmail("testuser");
         u.setPassword(encoder.encode("pass"));
-        u.setRole("ROLE_USER");
+        u.setPermission("ROLE_USER");
         userRepo.save(u);
     }
 
     @Test
     void protectedEndpoint_requiresJwt_and_returnsAuthenticatedUser() throws Exception {
         // login
-        String loginJson = "{\"username\":\"testuser\",\"password\":\"pass\"}";
+        String loginJson = "{\"email\":\"testuser\",\"password\":\"pass\"}";
         String resp = mvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
