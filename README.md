@@ -52,6 +52,12 @@ Se desideri cambiare il prefisso o escludere altri percorsi, modifica `ApiPrefix
 - `GET /api/v1/users/{username}` — informazioni pubbliche utente
   - Risposta: `GetResponse<UserDto>` (wrapper uniforme per GET)
 
+Note autenticazione `/api/v1`
+
+- Tutte le rotte che iniziano con `/api/v1` richiedono autenticazione JWT per impostazione predefinita, ad eccezione dei percorsi di login/registrazione che restano pubblici (es. `/auth/login`).
+- Se esponi un endpoint di login sotto `/api/v1` puoi aggiungere una regola di eccezione: la configurazione attuale permette esplicitamente `/api/v1/login`.
+  - Risposta: `GetResponse<UserDto>` (wrapper uniforme per GET)
+
 Nota: altri controller che creerai riceveranno automaticamente il prefisso `/api/v1` a meno che il mapping inizi già con `/auth` o `/api`.
 
 ---

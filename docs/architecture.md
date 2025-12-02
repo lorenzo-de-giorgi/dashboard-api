@@ -45,3 +45,13 @@ Prefisso API globale `/api/v1`
   - Tutte le altre rotte otterranno automaticamente `/api/v1` anteposto, evitando di dover cambiare tutti i controller manualmente.
 - Vantaggi: versioning centralizzato e riduzione della modifica manuale dei controller.
 - Attenzione: se vuoi modificare il prefisso o il comportamento (ad es. escludere altri percorsi), modifica `ApiPrefixConfig`.
+
+Autenticazione per `/api/v1`
+
+- Per sicurezza, tutte le rotte che iniziano con `/api/v1` richiedono autenticazione JWT, ad eccezione dei percorsi di login/registrazione che restano pubblici. Di default il progetto espone il login sotto `/auth/login`; se in futuro aggiungi `/api/v1/login` viene comunque considerato pubblico dalla configurazione.
+- La regola è implementata in `SecurityConfig` con i seguenti comportamenti principali:
+  - `requestMatchers("/auth/**").permitAll()` — mantiene pubblici login/registrazione.
+  - `requestMatchers("/api/v1/login").permitAll()` — eccezione per eventuale login sotto `/api/v1`.
+  - `requestMatchers("/api/v1/**").authenticated()` — richiede autenticazione per tutte le altre rotte sotto `/api/v1`.
+
+Verifica: usa un token JWT valido nell'header `Authorization: Bearer <token>` per accedere alle rotte protette.

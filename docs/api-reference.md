@@ -11,6 +11,20 @@ UsersController
 
 - `GET /api/v1/users/{username}` — restituisce informazioni pubbliche sull'utente (`GetResponse<UserDto>`). Se non trovato -> `404`.
 
+ProtectedController
+
+- `GET /api/v1/protected/test` — endpoint di test protetto tramite JWT; richiede header `Authorization: Bearer <token>` e restituisce il nome dell'utente autenticato in `data`.
+
+Esempio di chiamata protetta (curl):
+
+```cmd
+# prima ottieni il token
+curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"testuser\",\"password\":\"pass\"}" http://localhost:8080/auth/login
+
+# poi chiama l'endpoint protetto
+curl -H "Authorization: Bearer <token>" http://localhost:8080/api/v1/protected/test
+```
+
 Esempi di risposta
 
 -- `GET /api/v1/users/{username}` (200):
