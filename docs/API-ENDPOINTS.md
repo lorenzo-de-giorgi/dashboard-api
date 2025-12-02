@@ -26,7 +26,7 @@ Questo documento elenca gli endpoint esposti dall'applicazione, il metodo HTTP, 
 
   - Metodo: `GET`
   - Path: `/api/v1/users/{username}`
-  - Autenticazione: SÌ (endpoint sotto `/api/v1` protetto da JWT)
+  - Autenticazione: SÌ (endpoint protetto da JWT). Accesso consentito solo a `ROLE_ADMIN` o all'utente stesso (es. `username` == token subject).
   - Response: `GetResponse<UserDto>`
     - Esempio:
       `{ "success": true, "data": { "id": 1, "username": "alice", "role": "ROLE_USER" }, "message": "OK", "timestamp": 1700000000000, "resultsSize": 1 }`

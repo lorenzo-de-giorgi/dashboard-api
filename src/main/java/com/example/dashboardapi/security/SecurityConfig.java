@@ -30,6 +30,9 @@ public class SecurityConfig {
                 sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
+        // ensure unauthenticated requests receive a 401 JSON response
+        http.exceptionHandling(ex -> ex.authenticationEntryPoint(new RestAuthenticationEntryPoint()));
+
         http.authorizeHttpRequests(auth -> auth
                 // allow unauthenticated access to auth endpoints (login/register)
                 .requestMatchers("/auth/**").permitAll()
