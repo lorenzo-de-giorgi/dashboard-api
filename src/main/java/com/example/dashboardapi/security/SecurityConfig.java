@@ -31,8 +31,13 @@ public class SecurityConfig {
         );
 
         http.authorizeHttpRequests(auth -> auth
+                // allow unauthenticated access to auth endpoints (login/register)
                 .requestMatchers("/auth/**").permitAll()
-                // Temporaneamente permettiamo tutte le richieste per debug (rimuovere in produzione)
+                // allow an explicit login path under /api/v1 if ever used
+                .requestMatchers("/api/v1/login").permitAll()
+                // require authentication for all other /api/v1 endpoints
+                .requestMatchers("/api/v1/**").authenticated()
+                // other endpoints remain permitted
                 .anyRequest().permitAll()
         );
 

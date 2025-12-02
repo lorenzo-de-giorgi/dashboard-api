@@ -6,13 +6,18 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none   # Hibernate non crea tabelle, lascia fare a Flyway
+      ddl-auto: none # Hibernate non crea tabelle, lascia fare a Flyway
     show-sql: true
 
   flyway:
     enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: true   # utile se il DB è già esistente
+    baseline-on-migrate: true # utile se il DB è già esistente
 
 server:
   port: 8080
+
+# Prefisso API configurabile usato da `ApiPrefixFilter`
+api:
+  prefix: /api/v1
+  exclusions: /auth,/api,/swagger,/actuator
