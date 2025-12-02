@@ -1,3 +1,80 @@
+# Dashboard API - Migrazioni DB (Flyway)
+
+Questo repository usa Flyway per gestire le migrazioni del database PostgreSQL.
+
+## Prerequisiti
+
+- Java (compatibile con la versione del progetto)
+- Maven wrapper incluso (`mvnw.cmd` su Windows)
+- PostgreSQL in esecuzione e raggiungibile con le credenziali configurate
+
+I dettagli di connessione si trovano in `src/main/resources/application.yml` e `application.properties`.
+
+## Dove sono le migrazioni
+
+Le migration SQL si trovano in:
+
+```
+src/main/resources/db/migration
+```
+
+Le migration devono essere compatibili con PostgreSQL (attenzione: sintassi MySQL NON è supportata).
+
+## Comandi utili (Windows `cmd.exe`)
+
+- Mostra lo stato delle migrazioni (Pending / Applied):
+
+```bat
+mvnw.cmd flyway:info -Dflyway.configFiles=src/main/resources/application.yml
+```
+
+- Applica le migrazioni sul DB (esegue gli script presenti in `db/migration`):
+
+```bat
+mvnw.cmd flyway:migrate -Dflyway.configFiles=src/main/resources/application.yml
+```
+
+- Eseguire l'app (Flyway viene eseguito automaticamente all'avvio se `spring.flyway.enabled=true`):
+
+```bat
+mvnw.cmd -DskipTests spring-boot:run
+```
+
+## Reset / Rilanciare le migrazioni su DB vuoto
+
+- Se hai resettato il database (cancellato tutte le tabelle) e vuoi riapplicare le migrazioni, assicurati che lo schema sia vuoto.
+- In alternativa puoi rimuovere la tabella di stato di Flyway (`flyway_schema_history`) e rieseguire `flyway:migrate`.
+
+Attenzione: modificare manualmente `flyway_schema_history` può portare a incoerenze. Quando possibile usa un DB di sviluppo dedicato.
+
+## Troubleshooting comune
+
+- Errore di sintassi SQL durante `flyway:migrate`: spesso significa che la migration usa sintassi non compatibile con PostgreSQL (es. `ON UPDATE CURRENT_TIMESTAMP` è MySQL-only). Adatta lo script alla sintassi PostgreSQL.
+- Permessi: assicurati che l'utente del DB abbia i permessi per creare tabelle e scrivere nello schema.
+- Versioni Flyway/Postgres: Flyway mostra un warning se il server Postgres è più recente della versione testata della libreria; in genere funziona comunque, ma valuta l'aggiornamento di Flyway se incontri problemi specifici.
+
+## Esempio rapido
+
+1. Controlla stato:
+
+```bat
+mvnw.cmd flyway:info -Dflyway.configFiles=src/main/resources/application.yml
+```
+
+2. Applica migrazioni:
+
+```bat
+mvnw.cmd flyway:migrate -Dflyway.configFiles=src/main/resources/application.yml
+```
+
+3. Avvia l'app per verificare tutto:
+
+```bat
+mvnw.cmd -DskipTests spring-boot:run
+```
+
+Se vuoi che aggiunga comandi per ambienti Unix (`./mvnw`) o istruzioni per uso con Docker/Postgres in container, dimmelo e li aggiungo.
+
 # Dashboard API
 
 Progetto Spring Boot: API minimale per gestione utenti e autenticazione JWT.
